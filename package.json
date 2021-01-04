@@ -1,0 +1,23 @@
+{
+  "name": "realtimeanalyticsservice",
+  "version": "1.0.0",
+  "description": "Real-Time Analytics Service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EricGustin/real-time-analytics-service.git"
+  },
+  "author": "Eric Gustin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EricGustin/real-time-analytics-service/issues"
+  },
+  "homepage": "https://github.com/EricGustin/real-time-analytics-service#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
