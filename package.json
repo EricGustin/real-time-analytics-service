@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/EricGustin/real-time-analytics-service#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.5.1"
   }
 }
