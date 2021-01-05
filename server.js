@@ -6,7 +6,7 @@ const pool = require("./db");
 
 // middleware
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 // let pageHits = 0; 
 let numOfPosts = 0;
