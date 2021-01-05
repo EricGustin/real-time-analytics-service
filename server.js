@@ -8,7 +8,7 @@ const pool = require("./db");
 app.use(cors());
 app.use(express.json())
 
-// let pageHits = 0;
+// let pageHits = 0; 
 let numOfPosts = 0;
 
 app.get("/", async (req, res) => {
