@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "heroku-postbuild": "npm install",
+    "prod": "NODE_ENV=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
