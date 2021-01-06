@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Home</title>
+</head>
+
+<body>
+  <p id="page-hits"></p>
+
+  <script>
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          // performa action when the document is ready:
+          document.getElementById("page-hits").innerHTML = xhttp.responseText;
+        }
+    };
+    xhttp.open("GET", "/pagehits", true);
+    xhttp.send();
+  </script>
+</body>
+</html>

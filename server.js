@@ -8,10 +8,9 @@ const pool = require("./db");
 app.use(cors());
 app.use(express.json());
 
-// let pageHits = 0; 
 let numOfPosts = 0;
 
-app.get("/", async (req, res) => {
+app.get("/pagehits", async (req, res) => {
   try {
     // get the current page hits from postgreSQL
     const allData = await pool.query("SELECT * FROM pagedata");
@@ -25,6 +24,10 @@ app.get("/", async (req, res) => {
   } catch (err) {
     console.log(err.message);
   }
+});
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/home.html');
 });
 
 app.put("/", async (req, res) => {
