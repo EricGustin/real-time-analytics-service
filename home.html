@@ -3,76 +3,177 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <script src="https://d3js.org/d3.v4.js"></script>
+  <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
+  <!-- <script src="../node_modules/chartjs/dist/Chart.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
   <title>Home</title>
 </head>
 
 <body>
   <p id="page-hits"></p>
   <div id="my-dataviz"></div>
+  <canvas id="myChart" ></canvas>
 
   <script>
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           // performa action when the document is ready:
-          document.getElementById("page-hits").innerHTML = xhttp.responseText;
+          graphData(JSON.parse(xhttp.responseText));
+          // document.getElementById("page-hits").innerHTML = xhttp.responseText;
         }
     };
-    xhttp.open("GET", "/pagehits", true);
+    xhttp.open("GET", "/pagehits", true); // prepare request to be sent
     xhttp.send();
+    
+    function graphData(data) {
 
-    // Basic line chart in d3.js
-    var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+      const formatDate = (dateString) => {
+        const options = { year: "numeric", month: "short", day: "numeric" }
+        return new Date(dateString).toLocaleDateString(undefined, options)
+      }
 
-    // append the svg object to the body of the page
-    var svg = d3.select("#my-dataviz")
-      .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform",
-              "translate(" + margin.left + "," + margin.top + ")");
+      var firstDay = new Date(data[0].time_stamp);
+      const lastDay = new Date(data[data.length-1].time_stamp);
+      const numOfDays = Math.ceil((lastDay-firstDay)/(1000*3600*24));
 
-    //Read the data
-    d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+      var days = [];
+      var curDay = new Date(data[0].time_stamp);
+      for (var i = 0; i < numOfDays; i++) {
+        days.push(formatDate(curDay));
+        curDay.setDate(curDay.getDate()+1);
+      }
+      
+      var pageHits = Array(numOfDays).fill(0);
+      for (var i = 0; i < data.length; i++) {
+        const index = Math.floor(((new Date(data[i].time_stamp))-firstDay)/(1000*3600*24));
+        pageHits[index]++;
+      }
+      
 
-      // When reading the csv, I must format variables:
-      function(d){
-        return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-      },
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: days,
+              datasets: [{
+                  label: 'Page Visits Per Day',
+                  data: pageHits,
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
+    }
+      // const minX = data[0].time_stamp;
+      // const maxX = data[data.length-1].time_stamp;
+      // const minY = data[0].id;
+      // const maxY = data[data.length-1].id;
 
-      // Now I can use this dataset:
-      function(data) {
+      // var xScale = d3.scaleTime()
+      //   .domain([minX])
+      //   .range([ 0, width ]);
+      // svg.append("g")
+      //   .attr("transform", "translate(0," + height + ")")
+      //   .call(d3.axisBottom(x));
 
-        // Add X axis --> it is a date format
-        var x = d3.scaleTime()
-          .domain(d3.extent(data, function(d) { return d.date; }))
-          .range([ 0, width ]);
-        svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x));
 
-        // Add Y axis
-        var y = d3.scaleLinear()
-          .domain([0, d3.max(data, function(d) { return +d.value; })])
-          .range([ height, 0 ]);
-        svg.append("g")
-          .call(d3.axisLeft(y));
+      // var dates = [];
+      // var pageHits = [];
+      // for (var i=0; i < data.length; i++) {
+      //   const timeStamp = new Date(data[i].time_stamp);
+      //   //dates.push(timeStamp.getFullYear()+"-"+(timeStamp.getMonth()+1)+"-"+timeStamp.getDate());
+      //   pageHits.push(data[i].id);
+      //   dates.push(timeStamp.getTime() / 1000);
+      // }
+    
+      //       // Convert JSON to CSV
+      // var csv = '';
+      // for (var i = 0; i < data.length; i++) {
+      //     var line = '';
+      //     for (var index in data[i]) {
+      //       if (line != '') line += ','
+      //       line += data[i][index];
+      //     }
+      //   csv += line + '\r\n';
+      // }
 
-        // Add the line
-        svg.append("path")
-          .datum(data)
-          .attr("fill", "none")
-          .attr("stroke", "steelblue")
-          .attr("stroke-width", 1.5)
-          .attr("d", d3.line()
-            .x(function(d) { return x(d.date) })
-            .y(function(d) { return y(d.value) })
-            )
-    })
+      
+      // //Read the data
+      // d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+
+      //   // When reading the csv, I must format variables:
+      //   function(d){
+      //     return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+      //   },
+
+      //   // Now I can use this dataset:
+      //   function(data) {
+
+      //     // Add X axis --> it is a date format
+      //     var x = d3.scaleTime()
+      //       .domain(d3.extent(data, function(d) { return d.date; }))
+      //       .range([ 0, width ]);
+      //     svg.append("g")
+      //       .attr("transform", "translate(0," + height + ")")
+      //       .call(d3.axisBottom(x));
+
+      //     // Add Y axis
+      //     var y = d3.scaleLinear()
+      //       .domain([0, d3.max(data, function(d) { return +d.value; })])
+      //       .range([ height, 0 ]);
+      //     svg.append("g")
+      //       .call(d3.axisLeft(y));
+
+      //     // Add the line
+      //     svg.append("path")
+      //       .datum(data)
+      //       .attr("fill", "none")
+      //       .attr("stroke", "steelblue")
+      //       .attr("stroke-width", 1.5)
+      //       .attr("d", d3.line()
+      //         .x(function(d) { return x(d.date) })
+      //         .y(function(d) { return y(d.value) })
+      //         )
+
+      // })
+
+
+      // // set the dimensions and margins of the graph
+      // var margin = {top: 10, right: 30, bottom: 30, left: 60},
+      //     width = 920 - margin.left - margin.right,
+      //     height = 800 - margin.top - margin.bottom;
+
+      // // append the svg object to the body of the page
+      // var svg = d3.select("#my-dataviz")
+      //   .append("svg")
+      //     .attr("width", width + margin.left + margin.right)
+      //     .attr("height", height + margin.top + margin.bottom)
+      //   .append("g")
+      //     .attr("transform",
+      //           "translate(" + margin.left + "," + margin.top + ")");
+  
+      // var x = d3.scaleLinear()
+      //   .domain(d3.extent(dates))
+      //   .range([ 0, width ]);
+      // svg.append("g")
+      //   .attr("transform", "translate(0," + height + ")")
+      //   .call(d3.axisBottom(x));
+
+      // // Add Y axis
+      // var y = d3.scaleLinear()
+      //   .domain([0, maxY])
+      //   .range([ height, 0 ]);
+      // svg.append("g")
+      //   .call(d3.axisLeft(y));
+
   </script>
 </body>
 </html>
