@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "heroku-postbuild": "npm install",
+    "heroku-postbuild": "npm install && npm install chart.js",
     "prod": "NODE_ENV=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
