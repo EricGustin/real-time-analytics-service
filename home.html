@@ -40,7 +40,7 @@
       console.log((lastDay-firstDay)/(1000*3600*24));
       // const numOfDays = Math.ceil((lastDay-firstDay)/(1000*3600*24));
       const numOfDays = Math.floor(lastDay.getTime() / (1000*3600*24)) - Math.floor(firstDay.getTime() / (1000*3600*24))
-      xonsole.log(numOfDays);
+      console.log(numOfDays);
 
       var days = [];
       var curDay = new Date(data[0].time_stamp);
