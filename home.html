@@ -33,13 +33,12 @@
         return new Date(dateString).toLocaleDateString(undefined, options)
       }
 
-      // var firstDay = new Date(data[0].time_stamp);
-      // const lastDay = new Date(data[data.length-1].time_stamp);
-      const firstDay = Math.floor((new Date(data[0].time_stamp)).getTime() / (1000*3600*24));
-      const lastDay = Math.floor((new Date(data[data.length-1].time_stamp)).getTime() / (1000*3600*24));
-      console.log((lastDay-firstDay));
+      const firstDate = new Date(data[0].time_stamp);
+      const lastDate = new Date(data[data.length-1].time_stamp);
+      const firstDay = Math.floor((firstDate.getTime() - firstDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
+      const lastDay = Math.floor((lastDate.getTime() - lastDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
+      console.log((new Date(data[0].time_stamp).getTimezoneOffset()));
       const numOfDays = lastDay - firstDay + 1;
-      // const numOfDays = Math.ceil((lastDay-firstDay)/(1000*3600*24));
 
 
       var days = [];
@@ -51,8 +50,8 @@
       
       var pageHits = Array(numOfDays).fill(0);
       for (var i = 0; i < data.length; i++) {
-        // const index = Math.floor(((new Date(data[i].time_stamp))-firstDay)/(1000*3600*24));
-        const index = Math.floor((new Date(data[i].time_stamp)).getTime() / (1000*3600*24)) - firstDay;
+        const indexDate = new Date(data[i].time_stamp);
+        const index = Math.floor((indexDate.getTime() - indexDate.getTimezoneOffset()*60*1000) / (1000*3600*24)) - firstDay;
         pageHits[index]++;
       }
 
