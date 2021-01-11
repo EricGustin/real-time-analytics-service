@@ -35,6 +35,8 @@
 
       var firstDay = new Date(data[0].time_stamp);
       const lastDay = new Date(data[data.length-1].time_stamp);
+      console.log(firstDay);
+      console.log(lastDay);
       const numOfDays = Math.ceil((lastDay-firstDay)/(1000*3600*24));
 
       var days = [];
@@ -49,8 +51,6 @@
         const index = Math.floor(((new Date(data[i].time_stamp))-firstDay)/(1000*3600*24));
         pageHits[index]++;
       }
-      console.log(days);
-      console.log(pageHits);
 
       var ctx = document.getElementById('myChart').getContext('2d');
       var myChart = new Chart(ctx, {
