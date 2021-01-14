@@ -3,6 +3,7 @@ const app = express();
 const port = process.env.PORT || 8000;
 const cors = require("cors");
 const pool = require("./db");
+const { path } = require("d3-path");
 
 // middleware
 app.use(cors());
@@ -36,6 +37,11 @@ app.get('/', function(req, res){
 });
 
 app.get('/graph', function(req, res){
+  res.sendFile(__dirname + '/graph.html');
+})
+
+app.get('/graph/*', function(req, res){
+  const user_id = req.url.split('/').pop();
   res.sendFile(__dirname + '/graph.html');
 })
 
