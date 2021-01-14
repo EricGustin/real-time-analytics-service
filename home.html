@@ -8,68 +8,13 @@
 </head>
 
 <body>
-  <p id="page-hits"></p>
-  <div id="my-dataviz"></div>
-  <canvas id="myChart" ></canvas>
-
+  <div>
+    This page's "Page Hits" per day can be seen at current_directory/graph
+  </div>
   <script>
-    fetch("/pagehits").then(function (response) {
-      return response.json();
-    }).then(function(data) {
-      graphData(data);
-    }).catch(function (err) {
-      console.warn("Failed GET request.", err);
+    fetch("/events", {
+      method: 'POST'
     })
-    
-    function graphData(data) {
-
-      const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "short", day: "numeric" }
-        return new Date(dateString).toLocaleDateString(undefined, options)
-      }
-
-      const firstDate = new Date(data[0].time_stamp);
-      const lastDate = new Date(data[data.length-1].time_stamp);
-      const firstDay = Math.floor((firstDate.getTime() - firstDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
-      const lastDay = Math.floor((lastDate.getTime() - lastDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
-      const numOfDays = lastDay - firstDay + 1;
-
-
-      var days = [];
-      var curDay = new Date(data[0].time_stamp);
-      for (var i = 0; i < numOfDays; i++) {
-        days.push(formatDate(curDay));
-        curDay.setDate(curDay.getDate()+1);
-      }
-      
-      var pageHits = Array(numOfDays).fill(0);
-      for (var i = 0; i < data.length; i++) {
-        const indexDate = new Date(data[i].time_stamp);
-        const index = Math.floor((indexDate.getTime() - indexDate.getTimezoneOffset()*60*1000) / (1000*3600*24)) - firstDay;
-        pageHits[index]++;
-      }
-
-      var ctx = document.getElementById('myChart').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: days,
-              datasets: [{
-                  label: 'Page Visits Per Day',
-                  data: pageHits,
-              }]
-          },
-          options: {
-              scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero: true
-                      }
-                  }]
-              }
-          }
-      });
-    }
   </script>
 </body>
 </html>

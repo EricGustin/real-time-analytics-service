@@ -10,11 +10,8 @@ app.use(express.json());
 
 let numOfPosts = 0;
 
-app.get("/pagehits", async (req, res) => {
+app.get("/events", async (req, res) => {
   try {
-    // Insert new Page_Hit event into the events table
-    await pool.query("INSERT INTO events(event_name, time_stamp) VALUES ('Page_Hit', current_timestamp)");
-
      // get the current page hits from postgreSQL
      const allData = await pool.query("SELECT * FROM events");
 
@@ -24,10 +21,23 @@ app.get("/pagehits", async (req, res) => {
   }
 });
 
+app.post("/events", async (req, res) => {
+  try {
+    // Insert new Page_Hit event into the events table
+    await pool.query("INSERT INTO events(event_name, time_stamp) VALUES ('Page_Hit', current_timestamp)");
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/home.html');
 });
+
+app.get('/graph', function(req, res){
+  res.sendFile(__dirname + '/graph.html');
+})
 
 app.put("/", async (req, res) => {
   try {
