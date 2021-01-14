@@ -13,15 +13,23 @@
   <canvas id="myChart" ></canvas>
 
   <script>
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-          // performa action when the document is ready:
-          graphData(JSON.parse(xhttp.responseText));
-        }
-    };
-    xhttp.open("GET", "/pagehits", true); // prepare request to be sent
-    xhttp.send();
+    // var xhttp = new XMLHttpRequest();
+    // xhttp.onreadystatechange = function() {
+    //     if (this.readyState == 4 && this.status == 200) {
+    //       // performa action when the document is ready:
+    //       graphData(JSON.parse(xhttp.responseText));
+    //     }
+    // };
+    // xhttp.open("GET", "/pagehits", true); // prepare request to be sent
+    // xhttp.send();
+
+    fetch("http://localhost:8000/pagehits").then(function (response) {
+      return response.json();
+    }).then(function(data) {
+      graphData(data);
+    }).catch(function (err) {
+      console.warn("Failed GET request.", err);
+    })
     
     function graphData(data) {
 
@@ -34,7 +42,6 @@
       const lastDate = new Date(data[data.length-1].time_stamp);
       const firstDay = Math.floor((firstDate.getTime() - firstDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
       const lastDay = Math.floor((lastDate.getTime() - lastDate.getTimezoneOffset()*60*1000) / (1000*3600*24));
-      console.log((new Date(data[0].time_stamp).getTimezoneOffset()));
       const numOfDays = lastDay - firstDay + 1;
 
 
