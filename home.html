@@ -13,17 +13,7 @@
   <canvas id="myChart" ></canvas>
 
   <script>
-    // var xhttp = new XMLHttpRequest();
-    // xhttp.onreadystatechange = function() {
-    //     if (this.readyState == 4 && this.status == 200) {
-    //       // performa action when the document is ready:
-    //       graphData(JSON.parse(xhttp.responseText));
-    //     }
-    // };
-    // xhttp.open("GET", "/pagehits", true); // prepare request to be sent
-    // xhttp.send();
-
-    fetch("http://localhost:8000/pagehits").then(function (response) {
+    fetch("/pagehits").then(function (response) {
       return response.json();
     }).then(function(data) {
       graphData(data);
