@@ -12,7 +12,8 @@
   <canvas id="myChart" ></canvas>
 
   <script>
-    fetch("/events").then(function (response) {
+    const userID = window.location.pathname.split('/').pop();
+    fetch(`/events/${userID}`).then(function (response) {
       return response.json();
     }).then(function(data) {
       graphData(data);

@@ -11,11 +11,11 @@ app.use(express.json());
 
 let numOfPosts = 0;
 
-app.get("/events", async (req, res) => {
+app.get("/events/*", async (req, res) => {
   try {
+    const user_id = req.url.split('/').pop();
      // get the current page hits from postgreSQL
-     const allData = await pool.query("SELECT * FROM events");
-
+     const allData = await pool.query(`SELECT event_name, time_stamp FROM events where events.id='${user_id}'`);
      res.json(allData.rows);
   } catch (err) {
     console.log(err.message);
@@ -41,18 +41,7 @@ app.get('/graph', function(req, res){
 })
 
 app.get('/graph/*', function(req, res){
-  const user_id = req.url.split('/').pop();
   res.sendFile(__dirname + '/graph.html');
-})
-
-app.put("/", async (req, res) => {
-  try {
-    const pageHits = 0;
-    const updatePageHits = await pool.query("UPDATE pagedata SET pagehits = $1", [pageHits]);
-    res.json("Updated Page Hits!");
-  } catch (err) {
-    console.log(err.message);
-  }
 })
 
 app.post("/", (req, res) => {
